@@ -8,6 +8,7 @@ on:
       # Run when file is edited
       - Dockerfile.alpine
       - pidproxy/
+      - README.md
 
 env:
   # Image name at docker hub
