@@ -6,6 +6,7 @@ on:
       - main
     paths:
       # Run when file is edited
+      - .github/workflows/
       - Dockerfile.alpine
       - pidproxy/
       - README.md
