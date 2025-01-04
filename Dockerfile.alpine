@@ -1,0 +1,40 @@
+# twonky server  
+
+ARGS TWONKYSERVER_VERSION 8.5.2
+
+
+FROM docker.io/library/alpine:3.21 AS downloader
+#
+RUN apk add --no-cache --update unzip 
+RUN wget -O/tmp/twonky.zip https://download.twonky.com/8.5.2/twonky-x86-64-glibc-2.22-8.5.2.zip
+RUN mkdir -p /usr/local/twonky
+RUN unzip /tmp/twonky.zip -d /usr/local/twonky
+RUN chmod +x /usr/local/twonky/twonkys* /usr/local/twonky/cgi-bin/* /usr/local/twonky/plugins/*
+
+
+# PIDPROXY
+FROM docker.io/library/golang:1.23-alpine AS pp-builder
+ADD pidproxy /build
+WORKDIR /build
+RUN go build .
+
+
+# TWONKYSERVER
+FROM docker.io/library/alpine:3.21
+#
+COPY --from=downloader /usr/local/twonky /usr/local/twonky/
+COPY --from=pp-builder /build/pidproxy /usr/local/bin/pidproxy
+#
+RUN apk add --no-cache --update ffmpeg gcompat 
+RUN ln -sf /usr/bin/ffmpeg /usr/local/twonky/cgi-bin/ffmpeg
+RUN adduser -h /home/twonky -s /bin/sh -u 2000 -D twonky
+USER twonky
+WORKDIR /home/twonky
+
+RUN mkdir /home/twonky/appdata
+
+EXPOSE 9000
+
+ENTRYPOINT /usr/local/bin/pidproxy -exit-daemon-stop \
+    /tmp/twonky.pid /usr/local/twonky/twonkystarter \
+    -mspid /tmp/twonky.pid -appdata /home/twonky/appdata
