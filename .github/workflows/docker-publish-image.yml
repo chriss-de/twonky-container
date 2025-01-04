@@ -58,8 +58,9 @@ jobs:
           echo "LABEL org.label-schema.vcs-url=https://github.com/chriss-de/twonky-container" >> Dockerfile
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           echo "LABEL org.label-schema.vcs-ref=$GIT_HASH" >> Dockerfile
-          # Show edited Dockerfile content
           cat Dockerfile.alpine >> Dockerfile
+          #
+          cat Dockerfile
                     
       - name: Build and push latest
         uses: docker/build-push-action@v2
