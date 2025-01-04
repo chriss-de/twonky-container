@@ -1,6 +1,7 @@
 # twonky server  
 
-ARGS TWONKYSERVER_VERSION 8.5.2
+ARG TWONKYSERVER_VERSION 8.5.2
+ARG ALPINE_VERSION 3.21
 
 
 FROM docker.io/library/alpine:3.21 AS downloader
