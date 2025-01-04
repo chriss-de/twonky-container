@@ -55,12 +55,12 @@ jobs:
 
       - name: Add Label Schema to Dockerfile
         run: |
+          cat Dockerfile.alpine >> Dockerfile
           # Label Schema based on http://label-schema.org/rc1/
           echo "LABEL org.label-schema.build-date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> Dockerfile
           echo "LABEL org.label-schema.vcs-url=https://github.com/chriss-de/twonky-container" >> Dockerfile
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           echo "LABEL org.label-schema.vcs-ref=$GIT_HASH" >> Dockerfile
-          cat Dockerfile.alpine >> Dockerfile
           #
           cat Dockerfile
                     
